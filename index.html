@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工资实时计算器 - 苹果设计风格</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #1d1d1f;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            transform: translateY(0);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(90deg, #0071e3 0%, #2997ff 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.8px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.92;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 40px;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 20px;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group {
+            margin-bottom: 28px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group label i {
+            margin-right: 12px;
+            width: 24px;
+            color: #0071e3;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 18px 24px;
+            border-radius: 16px;
+            border: 1px solid #e0e0e0;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            color: #333;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
+
+        .select-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .select-container .input-field {
+            appearance: none;
+            padding-right: 60px;
+        }
+
+        .select-container i {
+            position: absolute;
+            right: 24px;
+            font-size: 18px;
+            color: #888;
+            pointer-events: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 20px;
+            border-radius: 16px;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #0071e3 0%, #2997ff 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(90deg, #34c759 0%, #4cd964 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(90deg, #ff9500 0%, #ffaa33 100%);
+        }
+
+        .display-section {
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .display-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafd 100%);
+            border-radius: 22px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .display-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #0071e3 0%, #2997ff 100%);
+        }
+
+        .display-card:nth-child(2)::before {
+            background: linear-gradient(90deg, #34c759 0%, #4cd964 100%);
+        }
+
+        .display-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-label {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 4.2rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .time-value {
+            color: #0071e3;
+        }
+
+        .money-value {
+            color: #34c759;
+        }
+
+        .info-text {
+            background: rgba(0, 113, 227, 0.06);
+            border-radius: 18px;
+            padding: 25px;
+            font-size: 1.05rem;
+            color: #555;
+            line-height: 1.7;
+            margin-top: 30px;
+            border: 1px solid rgba(0, 113, 227, 0.1);
+        }
+
+        .info-text h3 {
+            margin-bottom: 15px;
+            color: #0071e3;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+        }
+
+        .info-text h3 i {
+            margin-right: 10px;
+        }
+
+        .info-text p {
+            margin: 12px 0;
+        }
+
+        .calculation-details {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(245, 245, 247, 0.7);
+            border-radius: 18px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .calculation-details p {
+            margin: 10px 0;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #0071e3;
+        }
+
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card-value {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card-value {
+                font-size: 2.8rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+
+        .pulse {
+            animation: pulseAnimation 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseAnimation {
+            0% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); }
+            50% { transform: scale(1.02); box-shadow: 0 12px 30px rgba(52, 199, 89, 0.15); }
+            100% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); }
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(0, 113, 227, 0.15);
+            border-radius: 4px;
+            margin-top: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0071e3 0%, #2997ff 100%);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .error-message {
+            color: #ff3b30;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .floating-coins {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: floatUp 2s ease-out;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-coins"></i> 工资实时计算器</h1>
+            <p>输入您的月工资和工作时间，实时查看每一秒赚取的收入</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="salary"><i class="fas fa-money-bill-wave"></i> 月工资 (元)</label>
+                    <input type="number" id="salary" class="input-field" placeholder="例如: 10000" min="0" value="15000">
+                    <div id="salary-error" class="error-message">请输入有效的月工资</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="workdays"><i class="fas fa-calendar-alt"></i> 每月工作天数</label>
+                    <div class="select-container">
+                        <select id="workdays" class="input-field">
+                            <option value="20">20天</option>
+                            <option value="21">21天</option>
+                            <option value="22" selected>22天 (标准)</option>
+                            <option value="23">23天</option>
+                            <option value="24">24天</option>
+                            <option value="25">25天</option>
+                            <option value="26">26天</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="hours"><i class="fas fa-clock"></i> 每日工作时长 (小时)</label>
+                    <div class="select-container">
+                        <select id="hours" class="input-field">
+                            <option value="7">7小时</option>
+                            <option value="8" selected>8小时 (标准)</option>
+                            <option value="9">9小时</option>
+                            <option value="10">10小时</option>
+                            <option value="11">11小时</option>
+                            <option value="12">12小时</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="start-time"><i class="fas fa-play-circle"></i> 开始上班时间</label>
+                    <input type="time" id="start-time" class="input-field" value="09:00">
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button id="start-btn" class="btn btn-primary"><i class="fas fa-play"></i> 开始计算</button>
+                    <button id="pause-btn" class="btn btn-warning"><i class="fas fa-pause"></i> 暂停</button>
+                    <button id="reset-btn" class="btn btn-secondary"><i class="fas fa-redo"></i> 重置</button>
+                </div>
+                
+                <div class="info-text">
+                    <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
+                    <p><i class="fas fa-check-circle"></i> 输入您的月工资、工作天数和每日工作时长</p>
+                    <p><i class="fas fa-check-circle"></i> 设置您开始上班的时间</p>
+                    <p><i class="fas fa-check-circle"></i> 点击"开始计算"按钮</p>
+                    <p><i class="fas fa-check-circle"></i> 右侧将实时显示您上班的时间和赚取的工资</p>
+                </div>
+            </div>
+            
+            <div class="display-section">
+                <div class="display-card">
+                    <div class="card-label">工作时间</div>
+                    <div id="time-display" class="card-value time-value">00:00:00</div>
+                </div>
+                
+                <div class="display-card pulse">
+                    <div class="card-label">赚取工资</div>
+                    <div id="money-display" class="card-value money-value">0.00 元</div>
+                </div>
+                
+                <div class="calculation-details">
+                    <p><i class="fas fa-calculator"></i> <span class="highlight">计算方式</span></p>
+                    <p>每秒收入 = 月工资 ÷ 工作天数 ÷ 每日工作时长 ÷ 3600</p>
+                    <p>当前每秒收入: <span id="per-second" class="highlight">0.0000</span> 元</p>
+                    <p>当前每分钟收入: <span id="per-minute" class="highlight">0.00</span> 元</p>
+                    <p>当前每小时收入: <span id="per-hour" class="highlight">0.00</span> 元</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const salaryInput = document.getElementById('salary');
+            const workdaysSelect = document.getElementById('workdays');
+            const hoursSelect = document.getElementById('hours');
+            const startTimeInput = document.getElementById('start-time');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const timeDisplay = document.getElementById('time-display');
+            const moneyDisplay = document.getElementById('money-display');
+            const perSecondDisplay = document.getElementById('per-second');
+            const perMinuteDisplay = document.getElementById('per-minute');
+            const perHourDisplay = document.getElementById('per-hour');
+            const progressFill = document.getElementById('progress-fill');
+            const salaryError = document.getElementById('salary-error');
+            
+            let timer = null;
+            let startTime = null;
+            let paused = false;
+            let pausedTime = 0;
+            let perSecondIncome = 0;
+            let totalSeconds = 0;
+            
+            // 初始化
+            updatePerSecondIncome();
+            
+            // 当输入变化时更新计算
+            salaryInput.addEventListener('input', updatePerSecondIncome);
+            workdaysSelect.addEventListener('change', updatePerSecondIncome);
+            hoursSelect.addEventListener('change', updatePerSecondIncome);
+            
+            // 开始按钮事件
+            startBtn.addEventListener('click', function() {
+                if (!validateInput()) return;
+                
+                if (paused) {
+                    // 继续计时
+                    paused = false;
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> 开始计算';
+                    startTimer();
+                    return;
+                }
+                
+                // 开始新的计时
+                const [startHour, startMinute] = startTimeInput.value.split(':').map(Number);
+                startTime = new Date();
+                startTime.setHours(startHour, startMinute, 0, 0);
+                totalSeconds = 0;
+                
+                // 清除之前的定时器
+                if (timer) clearInterval(timer);
+                
+                // 开始计时
+                startTimer();
+                paused = false;
+                
+                // 更新按钮状态
+                startBtn.innerHTML = '<i class="fas fa-play"></i> 计算中...';
+                startBtn.disabled = true;
+                setTimeout(() => { startBtn.disabled = false; }, 300);
+            });
+            
+            // 暂停按钮事件
+            pauseBtn.addEventListener('click', function() {
+                if (!timer) return;
+                
+                paused = !paused;
+                if (paused) {
+                    clearInterval(timer);
+                    timer = null;
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> 继续计算';
+                    moneyDisplay.classList.remove('pulse');
+                } else {
+                    startTimer();
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> 计算中...';
+                    moneyDisplay.classList.add('pulse');
+                }
+            });
+            
+            // 重置按钮事件
+            resetBtn.addEventListener('click', function() {
+                clearInterval(timer);
+                timer = null;
+                paused = false;
+                totalSeconds = 0;
+                pausedTime = 0;
+                timeDisplay.textContent = '00:00:00';
+                moneyDisplay.textContent = '0.00 元';
+                progressFill.style.width = '0%';
+                startBtn.innerHTML = '<i class="fas fa-play"></i> 开始计算';
+                moneyDisplay.classList.remove('pulse');
+            });
+            
+            function startTimer() {
+                timer = setInterval(function() {
+                    if (!paused) {
+                        totalSeconds++;
+                        updateDisplay();
+                        
+                        // 更新进度条 (模拟8小时工作进度)
+                        const progress = Math.min((totalSeconds / (8 * 3600)) * 100, 100);
+                        progressFill.style.width = progress + '%';
+                        
+                        // 每10秒添加一个硬币动画
+                        if (totalSeconds % 10 === 0) {
+                            createCoinAnimation();
+                        }
+                    }
+                }, 1000);
+            }
+            
+            function updatePerSecondIncome() {
+                const salary = parseFloat(salaryInput.value) || 0;
+                const workdays = parseInt(workdaysSelect.value);
+                const hoursPerDay = parseInt(hoursSelect.value);
+                
+                // 计算每秒收入
+                perSecondIncome = salary / workdays / hoursPerDay / 3600;
+                
+                // 更新计算详情
+                perSecondDisplay.textContent = perSecondIncome.toFixed(4);
+                perMinuteDisplay.textContent = (perSecondIncome * 60).toFixed(2);
+                perHourDisplay.textContent = (perSecondIncome * 3600).toFixed(2);
+                
+                // 如果有计时运行中，更新显示
+                if (timer) {
+                    updateDisplay();
+                }
+            }
+            
+            function updateDisplay() {
+                // 计算并更新工资
+                const earned = totalSeconds * perSecondIncome;
+                moneyDisplay.textContent = earned.toFixed(2) + ' 元';
+                
+                // 转换为时:分:秒
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                
+                // 更新工作时间显示
+                timeDisplay.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function validateInput() {
+                const salary = parseFloat(salaryInput.value);
+                if (!salary || salary <= 0) {
+                    salaryError.style.display = 'block';
+                    salaryInput.style.borderColor = '#ff3b30';
+                    return false;
+                }
+                
+                salaryError.style.display = 'none';
+                salaryInput.style.borderColor = '#e0e0e0';
+                return true;
+            }
+            
+            function createCoinAnimation() {
+                const coin = document.createElement('div');
+                coin.innerHTML = '<i class="fas fa-coins"></i>';
+                coin.className = 'floating-coins';
+                
+                // 随机位置
+                const x = Math.random() * 80 + 10;
+                coin.style.left = x + '%';
+                coin.style.color = '#ffd700';
+                
+                document.body.appendChild(coin);
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    coin.remove();
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
